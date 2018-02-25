@@ -45,5 +45,5 @@ Where `unitId` is the id of the unit, and `metricType` is the name of the metric
  - The ORM is incomplete, with more time I could add onto this allow a complete abstraction of the database and query layer.
  - I wouldn't normally be pulling data in from a json file like this. Data for each of the units would be held in a queuing system, and then seperate consumers/containers would process each unit seperatly allowing for concurrency.
  - With more data, I would have partitioned the database into month/metric_type combinations to aid performance. I've had good success with this in the past.
- - Finally, I wouldn't every build something from scratch like this. No need to reinvent the wheel. Symfony, Laravel or even Lumen would be used. But the instructions said not to use any franeworks.
+ - Finally, I wouldn't have built something from scratch like this. No need to reinvent the wheel. Symfony, Laravel or even Lumen would be used. But the instructions said not to use any franeworks.
  - I also wouldn't be building my own ORM. Either Doctrine or Eloquent would be more than sufficient for the needs of the project. I was unsure with the instructions on whether or not ORMs were allowed.
