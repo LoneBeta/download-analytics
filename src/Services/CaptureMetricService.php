@@ -7,21 +7,31 @@ use Lonebeta\DownloadAnalytics\Models\MetricType;
 use Lonebeta\DownloadAnalytics\Models\Unit;
 use Lonebeta\DownloadAnalytics\Utilities\DatabaseConnection;
 
+/**
+ * Class CaptureMetricService
+ * @package Lonebeta\DownloadAnalytics\Services
+ */
 class CaptureMetricService
 {
+    /**
+     * CaptureMetricService constructor.
+     * @param DatabaseConnection $connection
+     */
     public function __construct(DatabaseConnection $connection)
     {
         $this->connection = $connection;
     }
 
     /**
-     *
+     * @param $units
+     * @return bool
      */
-    public function execute($units): void
+    public function execute($units): bool
     {
         foreach ($this->processUnits($units) as $metrics) {
             $this->insertMetricsIntoDatabase($metrics);
         }
+        return true;
     }
 
     /**

@@ -2,7 +2,6 @@
 
 namespace Lonebeta\DownloadAnalytics\Services;
 
-use Lonebeta\DownloadAnalytics\Models\Metric;
 use Lonebeta\DownloadAnalytics\Utilities\DatabaseConnection;
 
 class MetricService
