@@ -72,9 +72,9 @@ abstract class Model
      */
     protected function prepareValues($columnsAndValues)
     {
-        return array_values(array_map(function ($values) {
+        return implode(',', array_values(array_map(function ($values) {
             return "?";
-        }, $columnsAndValues));
+        }, $columnsAndValues)));
     }
 
     /**
@@ -89,7 +89,7 @@ abstract class Model
         $query = $this->connection->prepare($sql);
         $query->execute(array_values($value));
 
-        return $query->fetch();
+        return (object)$query->fetch();
     }
 
     /**
@@ -98,16 +98,26 @@ abstract class Model
     public function insertOnDuplicateKey(array $columnsAndValues)
     {
         $preparedValues = [];
+        $actualValues   = [];
         $columns        = $this->prepareColumns($columnsAndValues[0]);
-
-        $sql = "INSERT INTO $this->table ($columns) VALUES ";
 
         foreach ($columnsAndValues as $values) {
             $preparedValues[] = "(" . $this->prepareValues($values) . ")";
+            $actualValues = array_merge($actualValues, array_values($values));
         }
-        $sql .= implode(',', $preparedValues);
+        $sql = "INSERT INTO $this->table ($columns) VALUES ".implode(',', $preparedValues);
+        $sql .= $this->buildDuplicateKeyUpdateQuery($columnsAndValues[0]);
 
-        var_dump($sql);
-        die;
+        $query = $this->connection->prepare($sql);
+        $query->execute($actualValues);
+    }
+
+    protected function buildDuplicateKeyUpdateQuery($columnsAndValues)
+    {
+        $sql = "ON DUPLICATE KEY UPDATE ";
+
+        return $sql.implode(',',array_map(function($column) {
+            return "$column = VALUES ($column)";
+        },array_keys($columnsAndValues)));
     }
 }

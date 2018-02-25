@@ -62,7 +62,7 @@ class CaptureMetricService
      * @param array $metrics
      * @return array
      */
-    protected function processUnitMetrics(int $unitId, MetricType $metricType, array $metrics): array
+    protected function processUnitMetrics(int $unitId, \stdClass $metricType, array $metrics): array
     {
         $returnMetrics = [];
 
@@ -95,9 +95,9 @@ class CaptureMetricService
      * I have only added this in for the purpose of demonstration.
      *
      * @param int $unitId
-     * @return array
+     * @return \stdClass
      */
-    protected function getUnitFromDB(int $unitId): array
+    protected function getUnitFromDB(int $unitId): \stdClass
     {
         return (new Unit($this->connection))->firstOrCreate(
             ['id' => $unitId],
