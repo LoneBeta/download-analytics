@@ -17,5 +17,6 @@ class ConnectionFactory
 
             self::$connection = new \PDO("mysql:host=$host:$port;dbname=$database",$username,$password);
         }
+        return self::$connection;
     }
 }

@@ -95,11 +95,11 @@ class CaptureMetricService
      * I have only added this in for the purpose of demonstration.
      *
      * @param int $unitId
-     * @return \stdClass
+     * @return array
      */
-    protected function getUnitFromDB(int $unitId): \stdClass
+    protected function getUnitFromDB(int $unitId): array
     {
-        return (new Unit())->firstOrCreate(
+        return (new Unit($this->connection))->firstOrCreate(
             ['id' => $unitId],
             [
                 'provider' => 'Virgin Media',
@@ -113,6 +113,6 @@ class CaptureMetricService
      */
     protected function getMetricTypeFromDB(string $metricTypeName): \stdClass
     {
-        return (new MetricType())->firstOrCreate(['name' => $metricTypeName]);
+        return (new MetricType($this->connection))->firstOrCreate(['name' => $metricTypeName]);
     }
 }

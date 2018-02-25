@@ -1,7 +1,13 @@
 <?php
+
+require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__.'/../AppKernel.php';
+
 /**
- * Created by PhpStorm.
- * User: atu18
- * Date: 25/02/2018
- * Time: 14:24
+ * Very crude way of checking if the user is requesting a command, and then running that command.
  */
+if(preg_match('/command\s*=\s*([\S\s]+)/',implode(' ', $argv), $command)){
+    $command = $container->get('Lonebeta\\DownloadAnalytics\\Commands\\'.$command[1]);
+
+    $command->handle();
+}

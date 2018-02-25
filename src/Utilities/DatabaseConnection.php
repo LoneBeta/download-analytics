@@ -6,6 +6,6 @@ class DatabaseConnection
 {
     public function __construct()
     {
-        return new ConnectionFactory();
+        $this->connection = ConnectionFactory::getConnection();
     }
 }
