@@ -33,11 +33,13 @@ class CaptureMetricsCommand
     }
 
     /**
-     *
+     * @return bool
      */
-    public function handle(): void
+    public function handle(): bool
     {
         $this->captureMetricService->execute($this->getMetrics());
+
+        return true;
     }
 
     /**
@@ -48,8 +50,11 @@ class CaptureMetricsCommand
      */
     protected function getMetrics(): array
     {
-        $metrics = $this->client->get('http://tech-test.sandbox.samknows.com/php-2.0/testdata.json');
+        $metrics = $this->client->get(getenv('JSON_HOST'));
 
-        return json_decode($metrics->getBody()->getContents());
+        if($metrics = $metrics->getBody()->getContents()){
+            return json_decode($metrics);
+        }
+        return [];
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Lonebeta\DownloadAnalytics\Services;
 
-use Lonebeta\DownloadAnalytics\Models\MetricType;
 use Lonebeta\DownloadAnalytics\Repositories\MetricRepository;
 use Lonebeta\DownloadAnalytics\Repositories\MetricTypeRepository;
 use Lonebeta\DownloadAnalytics\Repositories\UnitRepository;
@@ -92,7 +91,7 @@ class CaptureMetricService
 
     /**
      * @param int $unitId
-     * @param MetricType $metricType
+     * @param \stdClass $metricType
      * @param array $metrics
      * @return array
      */
