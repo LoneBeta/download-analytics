@@ -2,6 +2,7 @@
 
 namespace Lonebeta\DownloadAnalytics\Services;
 
+use Lonebeta\DownloadAnalytics\Models\Metric;
 use Lonebeta\DownloadAnalytics\Utilities\DatabaseConnection;
 
 class MetricService
@@ -22,15 +23,13 @@ class MetricService
      */
     public function getMetrics(\stdClass $unit, \stdClass $metricType)
     {
-        return Metric::where('unit_id', $unit->id)
-            ->where('type', $metricType->id)
-            ->selectRaw(implode(',', $this->rawSelect))
-            ->groupBy(DB::raw('DATE_FORMAT(timestamp, "%Y-%m-%d %H:00:00")'))
-            ->get()
-            ->toArray();
+        $query = $this->connection->connection->prepare($this->metricSql);
+        $query->execute(['unitId' => $unit->id, 'type' => $metricType->id]);
+
+        return $query->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    protected $sql = 'SELECT DATE_FORMAT(timestamp, "%Y-%m-%d %H:00:00") as timestamp,
+    protected $metricSql = 'SELECT DATE_FORMAT(timestamp, "%Y-%m-%d %H:00:00") as timestamp,
         avg(value) as average, min(value) as minimum,
         max(value) as maximum, (min(value) + max(value) / count(value)) as median,
         count(value) as sample_size

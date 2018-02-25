@@ -18,6 +18,6 @@ class JsonResponse
     {
         header('Content-Type: application/json');
 
-        return json_encode($data);
+        echo json_encode($data);
     }
 }

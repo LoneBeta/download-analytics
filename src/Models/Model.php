@@ -82,12 +82,14 @@ abstract class Model
      * @param $value
      * @return mixed
      */
-    public function findBy($column, $value)
+    public function findBy($column, $values)
     {
         $sql = "SELECT * FROM $this->table WHERE $column = ?";
 
+        $values = is_array($values) ? $values : [$values];
+
         $query = $this->connection->prepare($sql);
-        $query->execute(array_values($value));
+        $query->execute(array_values($values));
 
         return (object)$query->fetch();
     }

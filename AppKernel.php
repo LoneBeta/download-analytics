@@ -3,8 +3,6 @@
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/config/routes.php';
 
-use \Lonebeta\DownloadAnalytics\Utilities\JsonResponse;
-
 /**
  * Load .env file into global environment variables
  */
@@ -20,20 +18,26 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
     handleRequest($dispatcher, $container);
 }
 
+/**
+ * @param \FastRoute\Dispatcher $dispatcher
+ * @param $container
+ * @return mixed
+ */
 function handleRequest(\FastRoute\Dispatcher $dispatcher, $container)
 {
-    $httpMethod = $_SERVER['REQUEST_METHOD'];
-    $uri        = $_SERVER['REQUEST_URI'];
-    $routeInfo  = $dispatcher->dispatch($httpMethod, $uri);
+    $routeInfo = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
 
-    $handler   = parseHandler($routeInfo[1]);
-    $arguments = $routeInfo[2];
+    $handler    = parseHandler($routeInfo[1]);
+    $arguments  = $routeInfo[2];
+    $controller = $container->get('Lonebeta\\DownloadAnalytics\\Controllers\\' . $handler['class']);
 
-    $controller = $container->get($handler['class']);
-
-    return $controller->$handler['method'](...$arguments);
+    return call_user_func_array( [$controller, $handler['method']], $arguments);
 }
 
+/**
+ * @param $handler
+ * @return array
+ */
 function parseHandler($handler)
 {
     $handler = explode("@", $handler);
