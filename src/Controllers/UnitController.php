@@ -1,7 +1,18 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: atu18
- * Date: 25/02/2018
- * Time: 14:25
- */
+
+namespace Lonebeta\DownloadAnalytics\Controllers;
+
+use Lonebeta\DownloadAnalytics\Services\MetricService;
+
+class UnitController
+{
+    public function __construct(MetricService $metricService)
+    {
+        $this->metricService = $metricService;
+    }
+
+    public function view($unitId, $metricTypeName)
+    {
+        return ['data' => []];
+    }
+}

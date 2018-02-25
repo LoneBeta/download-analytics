@@ -1,7 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: atu18
- * Date: 25/02/2018
- * Time: 14:26
- */
+
+namespace Lonebeta\DownloadAnalytics\Models;
+
+class Metric extends Model
+{
+    protected $table = "metrics";
+}
