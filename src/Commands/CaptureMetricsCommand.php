@@ -5,6 +5,10 @@ namespace Lonebeta\DownloadAnalytics\Commands;
 use GuzzleHttp\Client;
 use Lonebeta\DownloadAnalytics\Services\CaptureMetricService;
 
+/**
+ * Class CaptureMetricsCommand
+ * @package Lonebeta\DownloadAnalytics\Commands
+ */
 class CaptureMetricsCommand
 {
     /**
@@ -16,7 +20,6 @@ class CaptureMetricsCommand
      * @var Client
      */
     protected $client;
-
 
     /**
      * CaptureMetricsCommand constructor.
@@ -32,7 +35,7 @@ class CaptureMetricsCommand
     /**
      *
      */
-    public function handle()
+    public function handle(): void
     {
         $this->captureMetricService->execute($this->getMetrics());
     }

@@ -27,6 +27,10 @@ function handleRequest(\FastRoute\Dispatcher $dispatcher, $container)
 {
     $routeInfo = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
 
+    if($routeInfo[0] == 0){
+       die("Route not found!");
+    }
+
     $handler    = parseHandler($routeInfo[1]);
     $arguments  = $routeInfo[2];
     $controller = $container->get('Lonebeta\\DownloadAnalytics\\Controllers\\' . $handler['class']);

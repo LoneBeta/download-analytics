@@ -2,38 +2,31 @@
 
 namespace Lonebeta\DownloadAnalytics\Services;
 
+use Lonebeta\DownloadAnalytics\Repositories\MetricRepository;
 use Lonebeta\DownloadAnalytics\Utilities\DatabaseConnection;
 
+/**
+ * Class MetricService
+ * @package Lonebeta\DownloadAnalytics\Services
+ */
 class MetricService
 {
     /**
      * MetricService constructor.
-     * @param DatabaseConnection $connection
+     * @param MetricRepository $metricRepository
      */
-    public function __construct(DatabaseConnection $connection)
+    public function __construct(MetricRepository $metricRepository)
     {
-        $this->connection = $connection;
+        $this->metricRepository = $metricRepository;
     }
 
     /**
      * @param \stdClass $unit
      * @param \stdClass $metricType
-     * @return mixed
+     * @return array
      */
-    public function getMetrics(\stdClass $unit, \stdClass $metricType)
+    public function getMetrics(\stdClass $unit, \stdClass $metricType): array
     {
-        $query = $this->connection->connection->prepare($this->metricSql);
-        $query->execute(['unitId' => $unit->id, 'type' => $metricType->id]);
-
-        return $query->fetchAll(\PDO::FETCH_ASSOC);
+        return $this->metricRepository->getMetrics($unit->id, $metricType->id);
     }
-
-    protected $metricSql = 'SELECT DATE_FORMAT(timestamp, "%Y-%m-%d %H:00:00") as timestamp,
-        avg(value) as average, min(value) as minimum,
-        max(value) as maximum, (min(value) + max(value) / count(value)) as median,
-        count(value) as sample_size
-        FROM metrics
-        WHERE unit_id = :unitId
-        AND type = :type
-        GROUP BY DATE_FORMAT(timestamp, "%Y-%m-%d %H:00:00")';
 }

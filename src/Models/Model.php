@@ -54,7 +54,9 @@ abstract class Model
         $sql   = "INSERT INTO $this->table ($columns) VALUES ($values)";
         $query = $this->connection->prepare($sql);
 
-        return $query->execute(array_values($columnsAndValues));
+        if ($query->execute(array_values($columnsAndValues))) {
+            return (object)array_merge($columnsAndValues, ['id' => $this->connection->lastInsertId()]);
+        }
     }
 
     /**
@@ -91,7 +93,10 @@ abstract class Model
         $query = $this->connection->prepare($sql);
         $query->execute(array_values($values));
 
-        return (object)$query->fetch();
+        if ($result = $query->fetch()) {
+            return (object)$result;
+        }
+        return false;
     }
 
     /**
@@ -105,21 +110,25 @@ abstract class Model
 
         foreach ($columnsAndValues as $values) {
             $preparedValues[] = "(" . $this->prepareValues($values) . ")";
-            $actualValues = array_merge($actualValues, array_values($values));
+            $actualValues     = array_merge($actualValues, array_values($values));
         }
-        $sql = "INSERT INTO $this->table ($columns) VALUES ".implode(',', $preparedValues);
+        $sql = "INSERT INTO $this->table ($columns) VALUES " . implode(',', $preparedValues);
         $sql .= $this->buildDuplicateKeyUpdateQuery($columnsAndValues[0]);
 
         $query = $this->connection->prepare($sql);
         $query->execute($actualValues);
     }
 
+    /**
+     * @param $columnsAndValues
+     * @return string
+     */
     protected function buildDuplicateKeyUpdateQuery($columnsAndValues)
     {
         $sql = "ON DUPLICATE KEY UPDATE ";
 
-        return $sql.implode(',',array_map(function($column) {
-            return "$column = VALUES ($column)";
-        },array_keys($columnsAndValues)));
+        return $sql . implode(',', array_map(function ($column) {
+                return "$column = VALUES ($column)";
+            }, array_keys($columnsAndValues)));
     }
 }

@@ -2,6 +2,10 @@
 
 namespace Lonebeta\DownloadAnalytics\Utilities;
 
+/**
+ * Class ConnectionFactory
+ * @package Lonebeta\DownloadAnalytics\Utilities
+ */
 class ConnectionFactory
 {
     protected static $connection;

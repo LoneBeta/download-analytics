@@ -2,10 +2,10 @@
 
 namespace Lonebeta\DownloadAnalytics\Services;
 
-use Lonebeta\DownloadAnalytics\Models\Metric;
 use Lonebeta\DownloadAnalytics\Models\MetricType;
-use Lonebeta\DownloadAnalytics\Models\Unit;
-use Lonebeta\DownloadAnalytics\Utilities\DatabaseConnection;
+use Lonebeta\DownloadAnalytics\Repositories\MetricRepository;
+use Lonebeta\DownloadAnalytics\Repositories\MetricTypeRepository;
+use Lonebeta\DownloadAnalytics\Repositories\UnitRepository;
 
 /**
  * Class CaptureMetricService
@@ -14,12 +14,36 @@ use Lonebeta\DownloadAnalytics\Utilities\DatabaseConnection;
 class CaptureMetricService
 {
     /**
-     * CaptureMetricService constructor.
-     * @param DatabaseConnection $connection
+     * @var MetricRepository
      */
-    public function __construct(DatabaseConnection $connection)
+    protected $metricRepository;
+
+    /**
+     * @var MetricTypeRepository
+     */
+    protected $metricTypeRepository;
+
+    /**
+     * @var UnitRepository
+     */
+    protected $unitRepository;
+
+    /**
+     * CaptureMetricService constructor.
+     *
+     * @param MetricRepository $metricRepository
+     * @param MetricTypeRepository $metricTypeRepository
+     * @param UnitRepository $unitRepository
+     */
+    public function __construct(
+        MetricRepository $metricRepository,
+        MetricTypeRepository $metricTypeRepository,
+        UnitRepository $unitRepository
+    )
     {
-        $this->connection = $connection;
+        $this->metricRepository     = $metricRepository;
+        $this->metricTypeRepository = $metricTypeRepository;
+        $this->unitRepository       = $unitRepository;
     }
 
     /**
@@ -50,7 +74,7 @@ class CaptureMetricService
      *
      * Data being passed up is per unit/device.
      *
-     * This reduces memory consumption and allows us an order of parallelism.
+     * This reduces memory consumption.
      *
      * @param $unit
      * @return \Generator
@@ -96,7 +120,7 @@ class CaptureMetricService
      */
     protected function insertMetricsIntoDatabase($metrics): void
     {
-        (new Metric($this->connection))->insertOnDuplicateKey($metrics);
+        $this->metricRepository->insertOnDuplicateKey($metrics);
     }
 
     /**
@@ -109,7 +133,7 @@ class CaptureMetricService
      */
     protected function getUnitFromDB(int $unitId): \stdClass
     {
-        return (new Unit($this->connection))->firstOrCreate(
+        return $this->unitRepository->firstOrCreate(
             ['id' => $unitId],
             [
                 'provider' => 'Virgin Media',
@@ -123,6 +147,6 @@ class CaptureMetricService
      */
     protected function getMetricTypeFromDB(string $metricTypeName): \stdClass
     {
-        return (new MetricType($this->connection))->firstOrCreate(['name' => $metricTypeName]);
+        return $this->metricTypeRepository->firstOrCreate(['name' => $metricTypeName]);
     }
 }
