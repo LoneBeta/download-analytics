@@ -1,0 +1,19 @@
+{
+  "name": "lonebeta/download-analytics",
+  "license": "MIT",
+  "type": "project",
+  "require": {
+    "php": ">=7.1.3",
+    "php-di/php-di": "^6.0",
+    "nikic/fast-route": "^1.3",
+    "guzzlehttp/guzzle": "~6.0",
+    "vlucas/phpdotenv": "^2.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Lonebeta\\DownloadAnalytics\\": "src/"
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
